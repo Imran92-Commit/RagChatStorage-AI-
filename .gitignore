@@ -1,0 +1,28 @@
+
+# Maven
+/target/
+.mvn/
+.settings/
+.classpath
+.project
+
+# IntelliJ
+.idea/
+*.iml
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Truststores/keys
+*.jks
+*.p12
+*.pem
+*.crt
+
+# Env
+.env

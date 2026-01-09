@@ -2,7 +2,7 @@
 set -euo pipefail
 CERT_FILE=${1:-server-chain.pem}
 STORE=${2:-llm-truststore.jks}
-PASSWORD=${3:-changeit}
+PASSWORD=${3:-mysecretpass}
 ALIAS=${4:-llm-root}
 
 if ! command -v keytool >/dev/null 2>&1; then

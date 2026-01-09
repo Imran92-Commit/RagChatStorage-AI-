@@ -4,9 +4,6 @@ This kit helps you fix `PKIX path building failed` when calling your LLM endpoin
 
 ## What’s inside
 - `scripts/extract-cert-openssl.ps1` – PowerShell helper to fetch server cert chain via OpenSSL (Windows)
-- `scripts/create-truststore.ps1` – PowerShell to build `llm-truststore.jks` from a PEM/chain
-- `scripts/extract-cert-openssl.sh` – Bash helper (Linux/macOS)
-- `scripts/create-truststore.sh` – Bash truststore builder
 - `config/application.yml` – Example Spring Boot SSL bundle config
 - `src/main/resources/llm-truststore.jks` – (placeholder) copy your generated truststore here
 - `config/LlmWebClientConfig.java` – WebClient bean wired to SSL bundle
@@ -38,8 +35,8 @@ This kit helps you fix `PKIX path building failed` when calling your LLM endpoin
 ## Quick Start (Linux/macOS)
 ```bash
 ./scripts/extract-cert-openssl.sh api.openai.com 443 server-chain.pem
-./scripts/create-truststore.sh server-chain.pem llm-truststore.jks changeit llm-root
-cp llm-truststore.jks src/main/resources/
+./scripts/create-truststore.sh server-chain.pem llm-truststore1.jks changeit llm-root
+cp llm-truststore1.jks src/main/resources/
 ```
 Then configure `application.yml` as shown and restart.
 
