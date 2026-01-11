@@ -1,52 +1,71 @@
-# rag-chat-storage-svc
-Chat Storage Microservice -RAG (Retrieval-Augmented Generation) based chatbot system.
-Simple Spring Boot Java application (Maven). Includes a small shell helper to verify a Java truststore.
+# RAG Chat Storage
 
-## Overview
-- Language: Java
-- Framework: Spring Boot
-- Build: Maven
+A production-ready backend microservice in **Java Spring Boot** to store chat histories and sessions for a Retrieval-Augmented Generation (RAG) chatbot.
 
-## Prerequisites
-1. Java 11+ (or the version configured for the project)
-2. Maven 3.6+
-3. For the provided script: Bash (Git Bash or WSL on Windows) or use `keytool` directly
+## Features
 
-## Build
+- Create/manage chat **sessions** (rename, mark favorite, delete)
+- Store **messages** per session (sender, content, optional RAG **context** JSON)
+- **API key** authentication via `x-api-key` header (from env)
+- **Rate limiting** with Redis (fallback in-memory)
+- Centralized **logging** & global error handling
+- **Dockerized** app + PostgreSQL + Redis + **pgAdmin**
+- **Swagger/OpenAPI** docs (springdoc)
+- **Health checks**: `/healthz`, `/readyz` (+ Actuator)
+- **CORS** configurable via env
+- **Pagination** on message retrieval
+- Basic **unit tests** with JUnit 5
 
-1. Build with Maven:
-# mvn clean package
+## Quick Start (Docker Compose)
 
-2. Run with Spring Boot plugin:
-   mvn spring-boot:run
+1. Create `.env` from example:
+   ```bash
+   cp .env.example .env
+   # edit .env as needed
+   ```
+2. Build & run:
+   ```bash
+   docker compose up --build
+   ```
+3. Visit:
+   - Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+   - Actuator: `http://localhost:8080/actuator/health`
 
-3. Run the packaged jar:
- # java -jar target/*.jar
+## Run locally (without Docker)
 
-## Truststore verification
-A small script is included to list entries in a Java KeyStore:
-- Script path: `src/main/java/com/example/ragchat/scripts/verify-truststore.sh`
-- Usage:
-  ./src/main/java/com/example/ragchat/scripts/verify-truststore.sh [path-to-jks] [password]
--
-    - Defaults: path = `src/main/resources/llm-truststore.jks`, password = `mysecretpass`
-If you are on native Windows (CMD/PowerShell) and prefer not to run Bash, use `keytool` directly:
+```bash
+# Requires Java 17+ and Maven
+mvn clean package
+export API_KEY=changeme-super-secret-key
+export DATABASE_URL=jdbc:postgresql://localhost:5432/rag_chat
+export POSTGRES_USER=postgres
+export POSTGRES_PASSWORD=Pass@123
+java -jar target/rag-chat-storage-svc-1.0.0.jar
+```
 
-## keytool -list -keystore src/main/resources/llm-truststore.jks -storepass mysecretpass
-## Tests
-Run unit tests:
+## API Overview
 
-# mvn test
-## Project structure (important files)
+All requests must include header: `x-api-key: <API_KEY>`
 
-- `src/main/java` — application source  
-- `src/main/resources` — resources (e.g. `llm-truststore.jks`)  
-- `src/main/java/com/example/ragchat/scripts/verify-truststore.sh` — truststore helper script
+### Sessions
+- **Create**: `POST /api/sessions`
+  - Body: `{ "userId": "u123", "title": "Optional Title" }`
+- **List**: `GET /api/sessions?userId=u123&page=0&size=20`
+- **Get**: `GET /api/sessions/{sessionId}`
+- **Rename**: `PATCH /api/sessions/{sessionId}/rename`
+  - Body: `{ "title": "New Title" }`
+- **Favorite/Unfavorite**: `PATCH /api/sessions/{sessionId}/favorite`
+  - Body: `{ "isFavorite": true }`
+- **Delete**: `DELETE /api/sessions/{sessionId}`
 
-## Contributing
-- Open an issue or PR with a description of the change and tests where appropriate.
+### Messages
+- **Add**: `POST /api/sessions/{sessionId}/messages`
+  - Body: `{ "sender": "user|assistant|system", "content": "...", "context": { ... } }`
+- **List**: `GET /api/sessions/{sessionId}/messages?page=0&size=50&order=asc|desc`
+  - Response: `{ items: [...], page, pageSize, total }`
 
-## License
-Specify project license in the repository root (e.g. `LICENSE`).
+## Notes
 
+- Schema auto-updates (`hibernate.ddl-auto=update`) for demo; use Flyway/Liquibase in production.
+- Rate limiting uses Redis if available; otherwise falls back to in-memory (per-instance).
 

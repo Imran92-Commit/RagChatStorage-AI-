@@ -14,14 +14,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  #ssl:
-    #bundle:
-      #jks:
-        #llmTrust:
-          #truststore:
-            #location: classpath:llm-truststore.jks
-            #password: mysecretpass
-            #type: jks
 
 management:
   endpoint:
@@ -36,8 +28,3 @@ management:
 logging:
   level:
     root: ${LOG_LEVEL:INFO}
-
-# Example custom props for LLM
-llm:
-  base-url: https://api.openai.com
-  timeout-ms: 30000
