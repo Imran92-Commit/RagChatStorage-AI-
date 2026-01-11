@@ -11,10 +11,9 @@ A production-ready backend microservice in **Java Spring Boot** to store chat hi
 - Centralized **logging** & global error handling
 - **Dockerized** app + PostgreSQL + Redis + **pgAdmin**
 - **Swagger/OpenAPI** docs (springdoc)
-- **Health checks**: `/healthz`, `/readyz` (+ Actuator)
+- **Health checks**: `/health (+ Actuator)
 - **CORS** configurable via env
 - **Pagination** on message retrieval
-- Basic **unit tests** with JUnit 5
 
 ## Quick Start (Docker Compose)
 
